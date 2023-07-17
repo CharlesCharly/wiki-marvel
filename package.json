@@ -1,0 +1,19 @@
+{
+  "name": "wiki-marvel",
+  "version": "1.0.0",
+  "description": "fetch marvel characters info through the official api",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CharlesCharly/wiki-marvel.git"
+  },
+  "author": "Charles B",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CharlesCharly/wiki-marvel/issues"
+  },
+  "homepage": "https://github.com/CharlesCharly/wiki-marvel#readme"
+}
