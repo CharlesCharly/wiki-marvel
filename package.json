@@ -4,7 +4,7 @@
   "description": "fetch marvel characters info through the official api",
   "main": "index.js",
   "scripts": {
-    "test": "npm test"
+    "test": "npx jest"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/CharlesCharly/wiki-marvel/issues"
   },
-  "homepage": "https://github.com/CharlesCharly/wiki-marvel#readme"
+  "homepage": "https://github.com/CharlesCharly/wiki-marvel#readme",
+  "devDependencies": {
+    "axios": "^1.4.0",
+    "jest": "^29.6.1"
+  }
 }
