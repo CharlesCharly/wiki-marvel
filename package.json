@@ -4,7 +4,8 @@
   "description": "fetch marvel characters info through the official api",
   "main": "index.js",
   "scripts": {
-    "test": "npx jest"
+    "test": "npx jest",
+    "build": "echo 'No build steps required for this project yet'"
   },
   "repository": {
     "type": "git",
