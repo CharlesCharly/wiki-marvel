@@ -1,16 +1,6 @@
 require('dotenv').config()
 const nock = require('nock');
-const md5 = require("md5");
 const { getData } = require('../src/index');
-
-// Retrieve Marvel developer public and private key
-const apiPublicKey = process.env.MARVEL_API_PUBLIC_KEY
-const apiPrivateKey = process.env.MARVEL_API_PRIVATE_KEY
-
-// Generate timestamp for authentication
-const apiTs = Date.now()
-// Md5 digest of the TS parameter, private and public key for authentication
-const apiHash = md5(apiTs+apiPrivateKey+apiPublicKey)
 
 // API endpoint
 const apiURI = "https://gateway.marvel.com"
@@ -23,9 +13,9 @@ describe('characterInfo', () => {
       .get(`${charEndpoint}`)
       .query({
         name: "hulk",
-        ts: apiTs,
-        hash: apiHash,
-        apikey: apiPublicKey,
+        ts: /^[0-9]*$/,
+        hash: /^[a-zA-Z0-9_]*$/,
+        apikey: /^[a-zA-Z0-9_]*$/,
       })
       .reply(200, {
         data: {
@@ -52,9 +42,9 @@ describe('characterInfo', () => {
       .get(`${charEndpoint}`)
       .query({
         name: "superman",
-        ts: apiTs,
-        hash: apiHash,
-        apikey: apiPublicKey,
+        ts: /^[0-9]*$/,
+        hash: /^[a-zA-Z0-9_]*$/,
+        apikey: /^[a-zA-Z0-9_]*$/,
       })
       .reply(200, {
         data: {

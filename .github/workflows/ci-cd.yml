@@ -38,9 +38,6 @@ jobs:
         run: npm ci
 
       - name: Run tests
-        env:
-          MARVEL_API_PUBLIC_KEY: ${{ secrets.MARVEL_API_PUBLIC_KEY }}
-          MARVEL_API_PRIVATE_KEY: ${{ secrets.MARVEL_API_PRIVATE_KEY }}
         run: npm test
 
   deploy:
