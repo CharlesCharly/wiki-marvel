@@ -34,11 +34,41 @@ const getCharacterInfoData = async (characterName) => {
 };
 
 // Get raw character comics data
-const getCharacterComicsData = async () => {};
+const getCharacterComicsData = async (characterComicsURI) => {
+  try {
+    const response = await axios.get(characterComicsURI, {
+      params: {
+        ts: apiTs,
+        hash: apiHash,
+        apikey: apiPublicKey,
+      },
+    });
+
+    const rawData = response.data.data.results;
+
+    return rawData;
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.code === 409
+    ) {
+      // If the response code is 409, display the error
+      return error.response.data;
+    } else {
+      // If there was an error response from the API
+      throw error;
+    }
+  }
+};
 
 // Format raw data to extract specific keys
 const formatCharacterInfo = (rawData) => {
-  const { name = 'Unknown', description = 'No description available', comics = {} } = rawData;
+  const {
+    name = "Unknown",
+    description = "No description available",
+    comics = {},
+  } = rawData;
   const { collectionURI } = comics;
 
   return { name, description, collectionURI };
@@ -46,4 +76,8 @@ const formatCharacterInfo = (rawData) => {
 
 const formatCharacterComics = () => {};
 
-module.exports = { getCharacterInfoData, formatCharacterInfo };
+module.exports = {
+  getCharacterInfoData,
+  getCharacterComicsData,
+  formatCharacterInfo,
+};

@@ -8,9 +8,9 @@ const {
 // API endpoint
 const apiURI = "https://gateway.marvel.com";
 const charEndpoint = "/v1/public/characters";
-const legitCharComicsID = `${charEndpoint}1011334/comics`;
-const fakeCharComicsID = `${charEndpoint}123/comics`;
-const nonNumCharComicsID = `${charEndpoint}test/comics`;
+const legitCharComicsID = `${charEndpoint}/1011334/comics`;
+const fakeCharComicsID = `${charEndpoint}/123/comics`;
+const nonNumericCharComicsID = `${charEndpoint}/qwerty/comics`;
 
 describe("Fetch Character Info", () => {
   it("Should returns Marvel character info", async () => {
@@ -88,16 +88,18 @@ describe("Fetch Character Comics", () => {
               title: "Avengers: The Initiative (2007) #19",
               description: "Join the heroes around America in the battle.",
             },
+            {
+              title: "Avengers: The Initiative (2007) #18",
+              description:
+                "Can they stop the true mission of the Fifty State Initiative?",
+            },
           ],
         },
       });
 
     const rawData = await getCharacterComicsData(apiURI + legitCharComicsID);
 
-    expect(rawData.title).toEqual("Avengers: The Initiative (2007) #19");
-    expect(rawData.description).toEqual(
-      "Join the heroes around America in the battle."
-    );
+    expect(rawData).toHaveLength(2);
   });
 
   it("Should returns empty for wrong character ID", async () => {
@@ -114,14 +116,14 @@ describe("Fetch Character Comics", () => {
         },
       });
 
-    const rawData = await getCharacterComicsData(apiURI + legitCharComicsID);
+    const rawData = await getCharacterComicsData(apiURI + fakeCharComicsID);
 
-    expect(rawData).toBeUndefined();
+    expect(rawData).toHaveLength(0);
   });
 
   it("Should returns error for non numeric ID value", async () => {
     nock(`${apiURI}`)
-      .get(`${nonNumCharComicsID}`)
+      .get(`${nonNumericCharComicsID}`)
       .query({
         ts: /^[0-9]*$/,
         hash: /^[a-zA-Z0-9_]*$/,
@@ -132,11 +134,16 @@ describe("Fetch Character Comics", () => {
           "You must pass at least one valid character if you set the character filter.",
       });
 
-    try {
-      const rawData = await getCharacterInfoData(characterName);
-    } catch (error) {
-      expect(error.status).toBe("You must pass at least one valid character if you set the character filter.");
-    }
-
+    await expect(
+      getCharacterComicsData(apiURI + nonNumericCharComicsID)
+    ).rejects.toMatchObject({
+      response: {
+        status: 409,
+        data: {
+          status:
+            "You must pass at least one valid character if you set the character filter.",
+        },
+      },
+    });
   });
 });

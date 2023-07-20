@@ -17,7 +17,23 @@
     <div>
       <p>Name: <%= name %></p>
       <p>Description: <%= description %></p>
-      <p>URI: <%= uri %></p>
+      <h1>List of Comics</h1>
+      <% if (comics.length === 0) { %>
+      <p>No comics found.</p>
+      <% } else { %>
+      <ul>
+        <% comics.forEach(comic => { %>
+        <li>
+          <h3><%= comic.title %></h3>
+          <% if (comic.description) { %>
+          <p><%= comic.description %></p>
+          <% } else { %>
+          <p>N/A</p>
+          <% } %>
+        </li>
+        <% }); %>
+      </ul>
+      <% } %>
     </div>
     <% } %>
   </body>

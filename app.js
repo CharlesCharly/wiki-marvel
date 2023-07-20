@@ -2,11 +2,11 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const config = require(path.resolve(__dirname, "config.js"));
-const { getCharacterInfoData, formatCharacterInfo } = require(path.resolve(
-  __dirname,
-  "src",
-  "index.js"
-));
+const {
+  getCharacterInfoData,
+  getCharacterComicsData,
+  formatCharacterInfo,
+} = require(path.resolve(__dirname, "src", "index.js"));
 
 const app = express();
 // Set EJS as view engine
@@ -32,15 +32,24 @@ app.post("/search", async (request, response) => {
     const rawData = await getCharacterInfoData(characterName);
 
     if (typeof rawData != "undefined") {
-      // Results found
+      // Results found, format the character info
       const charData = formatCharacterInfo(rawData);
+
+      // Based on comicsURI, fetch the comics list
+      const charComics = await getCharacterComicsData(charData.collectionURI);
+      let comicsList = [];
+
+      if (!(charComics.code === 409 && charComics.status)) {
+        // If it returns a list of comics, we can format it
+        comicsList = charComics;
+      }
 
       response.render("result", {
         characterName: characterName,
         notFound: false,
         name: charData.name,
         description: charData.description,
-        uri: charData.collectionURI,
+        comics: comicsList,
       });
     } else {
       // No results found
