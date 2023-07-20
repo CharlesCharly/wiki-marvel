@@ -7,15 +7,18 @@
     <h2>You have researched <%= characterName %> in Marvel Wiki</h2>
 
     <% if (notFound) { %>
-      <div>
-        <p>It seems that the character is not from Marvel Universe, please check your typo.</p>
-      </div>
+    <div>
+      <p>
+        It seems that the character is not from Marvel Universe, please check
+        your typo.
+      </p>
+    </div>
     <% } else { %>
-      <div>
-        <p>Name: <%= name %></p>
-        <p>Description: <%= description %></p>
-        <p>URI: <%= uri %></p>
-      </div>
+    <div>
+      <p>Name: <%= name %></p>
+      <p>Description: <%= description %></p>
+      <p>URI: <%= uri %></p>
+    </div>
     <% } %>
   </body>
 </html>
