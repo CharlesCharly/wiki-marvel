@@ -1,6 +1,7 @@
 const axios = require('axios');
-const md5 = require("md5");
-const config = require("../config.js");
+const md5 = require('md5');
+const path = require('path');
+const config = require('../config.js');
 
 // Retrieve Marvel developer public and private key
 const apiPublicKey = config.apiPublicKey
@@ -26,7 +27,7 @@ const getData = async (characterName) => {
           },
         });
 
-  const data = res.data;
+  const [data] = res.data.data.results;
   return data;
 }
 
