@@ -16,9 +16,10 @@ const apiHash = md5(apiTs + apiPrivateKey + apiPublicKey);
 const apiURI = "https://gateway.marvel.com";
 const charEndpoint = "/v1/public/characters";
 
-const getData = async (characterName) => {
+// Get raw character data
+const getCharacterInfoData = async (characterName) => {
   const url = `${apiURI}${charEndpoint}`;
-  const res = await axios.get(url, {
+  const response = await axios.get(url, {
     params: {
       name: characterName,
       ts: apiTs,
@@ -27,8 +28,22 @@ const getData = async (characterName) => {
     },
   });
 
-  const [data] = res.data.data.results;
-  return data;
+  const [rawData] = response.data.data.results;
+
+  return rawData;
 };
 
-module.exports = { getData };
+// Get raw character comics data
+const getCharacterComicsData = async () => {};
+
+// Format raw data to extract specific keys
+const formatCharacterInfo = (rawData) => {
+  const { name = 'Unknown', description = 'No description available', comics = {} } = rawData;
+  const { collectionURI } = comics;
+
+  return { name, description, collectionURI };
+};
+
+const formatCharacterComics = () => {};
+
+module.exports = { getCharacterInfoData, formatCharacterInfo };

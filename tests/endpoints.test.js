@@ -1,13 +1,13 @@
 require("dotenv").config();
 const nock = require("nock");
-const { getData } = require("../src/index");
+const { getCharacterInfoData } = require("../src/index");
 
 // API endpoint
 const apiURI = "https://gateway.marvel.com";
 const charEndpoint = "/v1/public/characters";
 
-describe("characterInfo", () => {
-  it("checks if API returns Marvel character info", async () => {
+describe("Fetch Character Info", () => {
+  it("Checks if API returns Marvel character info", async () => {
     nock(`${apiURI}`)
       .get(`${charEndpoint}`)
       .query({
@@ -23,26 +23,28 @@ describe("characterInfo", () => {
               name: "Hulk",
               description:
                 "The angrier the Hulk gets, the stronger the Hulk gets.",
-              resourceURI:
-                "http://gateway.marvel.com/v1/public/characters/1009351",
+              comics: {
+                collectionURI:
+                  "http://gateway.marvel.com/v1/public/characters/1009351",
+              },
             },
           ],
         },
       });
 
     const characterName = "hulk";
-    const response = await getData(characterName);
+    const rawData = await getCharacterInfoData(characterName);
 
-    expect(response.name).toEqual("Hulk");
-    expect(response.description).toEqual(
+    expect(rawData.name).toEqual("Hulk");
+    expect(rawData.description).toEqual(
       "The angrier the Hulk gets, the stronger the Hulk gets."
     );
-    expect(response.resourceURI).toEqual(
+    expect(rawData.comics.collectionURI).toEqual(
       "http://gateway.marvel.com/v1/public/characters/1009351"
     );
   });
 
-  it("checks if API returns empty for non-Marvel character", async () => {
+  it("Checks if API returns empty for non-Marvel character", async () => {
     nock(`${apiURI}`)
       .get(`${charEndpoint}`)
       .query({
@@ -56,9 +58,10 @@ describe("characterInfo", () => {
           results: [],
         },
       });
-    const characterName = "superman";
-    const response = await getData(characterName);
 
-    expect(response).toBeUndefined();
+    const characterName = "superman";
+    const rawData = await getCharacterInfoData(characterName);
+
+    expect(rawData).toBeUndefined();
   });
 });

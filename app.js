@@ -2,7 +2,11 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const config = require(path.resolve(__dirname, "config.js"));
-const { getData } = require(path.resolve(__dirname, "src", "index.js"));
+const { getCharacterInfoData, formatCharacterInfo } = require(path.resolve(
+  __dirname,
+  "src",
+  "index.js"
+));
 
 const app = express();
 // Set EJS as view engine
@@ -25,16 +29,18 @@ app.get("/search", (request, response) => {
 app.post("/search", async (request, response) => {
   try {
     const { characterName } = request.body;
-    const data = await getData(characterName);
+    const rawData = await getCharacterInfoData(characterName);
 
-    if (typeof data != "undefined") {
+    if (typeof rawData != "undefined") {
       // Results found
+      const charData = formatCharacterInfo(rawData);
+
       response.render("result", {
         characterName: characterName,
         notFound: false,
-        name: data.name,
-        description: data.description,
-        uri: data.resourceURI,
+        name: charData.name,
+        description: charData.description,
+        uri: charData.collectionURI,
       });
     } else {
       // No results found
