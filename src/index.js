@@ -1,9 +1,10 @@
 const axios = require('axios');
 const md5 = require("md5");
+const config = require("../config.js");
 
 // Retrieve Marvel developer public and private key
-const apiPublicKey = process.env.MARVEL_API_PUBLIC_KEY
-const apiPrivateKey = process.env.MARVEL_API_PRIVATE_KEY
+const apiPublicKey = config.apiPublicKey
+const apiPrivateKey = config.apiPrivateKey
 
 // Generate timestamp for authentication
 const apiTs = Date.now()
