@@ -32,9 +32,9 @@ describe('characterInfo', () => {
     const characterName = "hulk"
     const response = await getData(characterName);
 
-    expect(response.data.results[0].name).toEqual("Hulk");
-    expect(response.data.results[0].description).toEqual("The angrier the Hulk gets, the stronger the Hulk gets.");
-    expect(response.data.results[0].resourceURI).toEqual("http://gateway.marvel.com/v1/public/characters/1009351");
+    expect(response.name).toEqual("Hulk");
+    expect(response.description).toEqual("The angrier the Hulk gets, the stronger the Hulk gets.");
+    expect(response.resourceURI).toEqual("http://gateway.marvel.com/v1/public/characters/1009351");
   });
 
   it("checks if API returns empty for non-Marvel character", async () => {
@@ -54,6 +54,6 @@ describe('characterInfo', () => {
     const characterName = "superman"
     const response = await getData(characterName);
 
-    expect(response.data.results).toHaveLength(0);
+    expect(response).toBeUndefined();
   });
 });
