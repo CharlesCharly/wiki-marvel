@@ -63,16 +63,29 @@
       const total = <%= typeof totalComics !== 'undefined' ? totalComics : 0 %>;
       const charID = <%= typeof charID !== 'undefined' ? charID : 0 %>;
 
+      // Previous page button
       function previousPage() {
         offset = Math.max(offset - limit, 0);
         fetchComicsData();
+        scrollToTop();
       }
 
+      // Next page button
       function nextPage() {
         offset = offset + limit;
         fetchComicsData();
+        scrollToTop();
       }
 
+      // Scroll back to the top of the page
+      function scrollToTop() {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }
+
+      // Fetch comics list through endpoint
       async function fetchComicsData() {
         const response = await fetch(
           `/api/comics?id=${charID}&offset=${offset}&limit=${limit}`
@@ -82,6 +95,7 @@
         updateComicsList(data);
       }
 
+      // Update HTML tree with the new list
       function updateComicsList(data) {
         const comicsList = document.querySelector("ul");
         comicsList.innerHTML = "";
@@ -108,8 +122,8 @@
         updateButtonState();
       }
 
+      // Update the button state
       function updateButtonState() {
-        // Update the button state
         const prevBtn = document.querySelector(
           "button[onclick='previousPage()']"
         );
