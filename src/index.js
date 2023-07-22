@@ -62,7 +62,7 @@ const getCharacterComicsData = async (characterComicsURI) => {
   }
 };
 
-// Format raw data to extract specific keys
+// Format raw character info to extract specific keys
 const formatCharacterInfo = (rawData) => {
   const {
     name = "Unknown",
@@ -74,10 +74,38 @@ const formatCharacterInfo = (rawData) => {
   return { name, description, collectionURI };
 };
 
-const formatCharacterComics = () => {};
+// Format raw comics list to extract specific keys
+const formatCharacterComics = (rawArray) => {
+  const keysToKeep = ["title", "description"];
+
+  const comicsList = keepSpecificKeys(rawArray, keysToKeep);
+
+  return comicsList;
+};
+
+// Keep specific keys from an array and return the new one
+const keepSpecificKeys = (dataArray, keysToKeep) => {
+  if (!dataArray) {
+    return [];
+  }
+
+  return dataArray.map((dataItem) => {
+    const filteredData = {};
+
+    keysToKeep.forEach((key) => {
+      if (dataItem.hasOwnProperty(key)) {
+        filteredData[key] = dataItem[key];
+      }
+    });
+
+    return filteredData;
+  });
+};
 
 module.exports = {
   getCharacterInfoData,
   getCharacterComicsData,
   formatCharacterInfo,
+  formatCharacterComics,
+  keepSpecificKeys,
 };

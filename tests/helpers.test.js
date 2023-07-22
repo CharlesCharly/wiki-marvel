@@ -1,5 +1,9 @@
 require("dotenv").config();
-const { formatCharacterInfo } = require("../src/index");
+const {
+  formatCharacterInfo,
+  formatCharacterComics,
+  keepSpecificKeys,
+} = require("../src/index");
 
 describe("Format Character Info", () => {
   it("Should format raw data correctly", () => {
@@ -75,5 +79,112 @@ describe("Format Character Info", () => {
     const result = formatCharacterInfo(rawData);
 
     expect(result).toEqual(expectedOutput);
+  });
+});
+
+describe("Format Character Comics", () => {
+  it("Should format raw comics list to extract specific keys", () => {
+    const rawArray = [
+      { title: "Comic 1", description: "Description 1", otherKey: "value" },
+      { title: "Comic 2", description: "Description 2", otherKey: "value" },
+    ];
+
+    const result = formatCharacterComics(rawArray);
+
+    const expectedResult = [
+      { title: "Comic 1", description: "Description 1" },
+      { title: "Comic 2", description: "Description 2" },
+    ];
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  it("Should return an empty array when the input array is empty", () => {
+    const rawArray = [];
+
+    const result = formatCharacterComics(rawArray);
+
+    expect(result).toEqual([]);
+  });
+
+  it("Should return an empty array when the input array is undefined", () => {
+    const result = formatCharacterComics(undefined);
+
+    expect(result).toEqual([]);
+  });
+
+  it("Should handle missing keys in the input objects", () => {
+    const rawArray = [
+      { title: "Comic 1", otherKey: "value" },
+      { description: "Description 2", otherKey: "value" },
+      { otherKey: "value" },
+    ];
+
+    const result = formatCharacterComics(rawArray);
+
+    const expectedResult = [
+      { title: "Comic 1", description: undefined },
+      { title: undefined, description: "Description 2" },
+      { title: undefined, description: undefined },
+    ];
+
+    expect(result).toEqual(expectedResult);
+  });
+});
+
+describe("Keep Specific Keys", () => {
+  it("Should keep specific keys from an array of objects", () => {
+    const dataArray = [
+      { id: 1, title: "Comic 1", description: "Description 1" },
+      { id: 2, title: "Comic 2", description: "Description 2" },
+      { id: 3, title: "Comic 3", description: "Description 3" },
+    ];
+
+    const keysToKeep = ["title", "description"];
+
+    const result = keepSpecificKeys(dataArray, keysToKeep);
+
+    const expectedResult = [
+      { title: "Comic 1", description: "Description 1" },
+      { title: "Comic 2", description: "Description 2" },
+      { title: "Comic 3", description: "Description 3" },
+    ];
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  it("Should return an empty array when the input array is empty", () => {
+    const dataArray = [];
+    const keysToKeep = ["title", "description"];
+
+    const result = keepSpecificKeys(dataArray, keysToKeep);
+
+    expect(result).toEqual([]);
+  });
+
+  it("Should return an empty array when the input array is undefined", () => {
+    const result = keepSpecificKeys(undefined, ["id", "name"]);
+
+    expect(result).toEqual([]);
+  });
+
+  it("Should keep only existing keys from the input objects", () => {
+    const dataArray = [
+      { id: 1, title: "Comic 1", description: "Description 1" },
+      { title: "Comic 2", description: "Description 2" },
+      { title: "Comic 3" },
+    ];
+
+    const keysToKeep = ["title", "description"];
+
+    const result = keepSpecificKeys(dataArray, keysToKeep);
+
+    const expectedResult = [
+      { title: "Comic 1", description: "Description 1" },
+      { title: "Comic 2", description: "Description 2" },
+      { title: "Comic 3" },
+    ];
+
+    expect(result).toEqual(expectedResult);
   });
 });
