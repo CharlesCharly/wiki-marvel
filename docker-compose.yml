@@ -1,0 +1,6 @@
+version: '1'
+services:
+  app:
+    image: wiki-marvel
+    ports:
+      - "3000:3000"

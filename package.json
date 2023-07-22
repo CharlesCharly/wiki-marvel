@@ -4,7 +4,8 @@
   "description": "fetch marvel characters info through the official api",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js",
+    "start": "node app.js",
+    "dev": "nodemon app.js",
     "test": "jest --verbose",
     "build": "echo 'No build steps required for this project yet'"
   },
