@@ -1,4 +1,5 @@
 require("dotenv").config();
+const nock = require('nock');
 const {
   formatCharacterInfo,
   formatCharacterComics,
@@ -6,6 +7,11 @@ const {
 } = require("../src/index");
 
 describe("Format Character Info", () => {
+  afterEach(() => {
+    // Clean up Nock's request history after each test
+    nock.cleanAll();
+  });
+
   it("Should format raw data correctly", () => {
     const rawData = {
       name: "Hulk",
@@ -83,6 +89,11 @@ describe("Format Character Info", () => {
 });
 
 describe("Format Character Comics", () => {
+  afterEach(() => {
+    // Clean up Nock's request history after each test
+    nock.cleanAll();
+  });
+
   it("Should format raw comics list to extract specific keys", () => {
     const rawArray = [
       { title: "Comic 1", description: "Description 1", otherKey: "value" },
@@ -133,6 +144,11 @@ describe("Format Character Comics", () => {
 });
 
 describe("Keep Specific Keys", () => {
+  afterEach(() => {
+    // Clean up Nock's request history after each test
+    nock.cleanAll();
+  });
+
   it("Should keep specific keys from an array of objects", () => {
     const dataArray = [
       { id: 1, title: "Comic 1", description: "Description 1" },

@@ -6,7 +6,7 @@ const {
   getCharacterInfoData,
   getCharacterComicsData,
   formatCharacterInfo,
-  formatCharacterComics
+  formatCharacterComics,
 } = require(path.resolve(__dirname, "src", "index.js"));
 
 const app = express();
@@ -40,11 +40,12 @@ app.post("/search", async (request, response) => {
       const charComics = await getCharacterComicsData(charData.collectionURI);
       let comicsList = [];
 
-      // Format comics list only if response is not an error code
-      if (!(charComics.code === 409 && charComics.status)) {
+      // Format comics list only if response is not null
+      if (typeof charComics != "undefined") {
         comicsList = formatCharacterComics(charComics);
       }
 
+      // Display the full view
       response.render("result", {
         characterName: characterName,
         notFound: false,

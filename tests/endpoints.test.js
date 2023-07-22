@@ -13,6 +13,11 @@ const fakeCharComicsID = `${charEndpoint}/123/comics`;
 const nonNumericCharComicsID = `${charEndpoint}/qwerty/comics`;
 
 describe("Fetch Character Info", () => {
+  afterEach(() => {
+    // Clean up Nock's request history after each test
+    nock.cleanAll();
+  });
+
   it("Should returns Marvel character info", async () => {
     nock(`${apiURI}`)
       .get(`${charEndpoint}`)
@@ -41,6 +46,7 @@ describe("Fetch Character Info", () => {
     const characterName = "hulk";
     const rawData = await getCharacterInfoData(characterName);
 
+    // Check if the values are the same
     expect(rawData.name).toEqual("Hulk");
     expect(rawData.description).toEqual(
       "The angrier the Hulk gets, the stronger the Hulk gets."
@@ -68,44 +74,70 @@ describe("Fetch Character Info", () => {
     const characterName = "superman";
     const rawData = await getCharacterInfoData(characterName);
 
+    // Check if array is undefined since it's not Marvel character
     expect(rawData).toBeUndefined();
   });
 });
 
 describe("Fetch Character Comics", () => {
-  it("Should returns Marvel character comics list for correct ID", async () => {
+  afterEach(() => {
+    // Clean up Nock's request history after each test
+    nock.cleanAll();
+  });
+
+  it("Should fetch all comics for Marvel character", async () => {
+    const limit = 45;
+    const offset = 32;
+    const total = 120;
+
+    const responseMocks = {
+      data: {
+        limit,
+        offset,
+        total,
+        count: limit,
+        // Create new array of `limit` value length, each element being a comic
+        results: Array.from({ length: limit }, (_, index) => ({
+          title: `Comic ${offset + index + 1}`,
+          description: `Description for Comic ${offset + index + 1}`,
+        })),
+      },
+    };
+
     nock(`${apiURI}`)
       .get(`${legitCharComicsID}`)
       .query({
+        limit: /^[0-9]*$/,
+        offset: /^[0-9]*$/,
         ts: /^[0-9]*$/,
         hash: /^[a-zA-Z0-9_]*$/,
         apikey: /^[a-zA-Z0-9_]*$/,
       })
-      .reply(200, {
-        data: {
-          results: [
-            {
-              title: "Avengers: The Initiative (2007) #19",
-              description: "Join the heroes around America in the battle.",
-            },
-            {
-              title: "Avengers: The Initiative (2007) #18",
-              description:
-                "Can they stop the true mission of the Fifty State Initiative?",
-            },
-          ],
-        },
-      });
+      .reply(200, responseMocks);
 
-    const rawData = await getCharacterComicsData(apiURI + legitCharComicsID);
+    const rawData = await getCharacterComicsData(
+      apiURI + legitCharComicsID,
+      offset,
+      limit
+    );
 
-    expect(rawData).toHaveLength(2);
+    // Check if rawData is an array
+    expect(Array.isArray(rawData)).toBe(true);
+    // Check if the length of rawData is equal to the limit value
+    expect(rawData.length).toBe(limit);
+    // Check if each element of rawData has the necessary keys (title, description)
+    rawData.forEach((comic) => {
+      expect(comic).toHaveProperty("title");
+      expect(comic).toHaveProperty("description");
+    });
   });
 
   it("Should returns empty for wrong character ID", async () => {
     nock(`${apiURI}`)
       .get(`${fakeCharComicsID}`)
       .query({
+        limit: /^[0-9]*$/,
+        offset: /^[0-9]*$/,
         ts: /^[0-9]*$/,
         hash: /^[a-zA-Z0-9_]*$/,
         apikey: /^[a-zA-Z0-9_]*$/,
@@ -118,6 +150,7 @@ describe("Fetch Character Comics", () => {
 
     const rawData = await getCharacterComicsData(apiURI + fakeCharComicsID);
 
+    // Check if array result is empty
     expect(rawData).toHaveLength(0);
   });
 
@@ -125,25 +158,20 @@ describe("Fetch Character Comics", () => {
     nock(`${apiURI}`)
       .get(`${nonNumericCharComicsID}`)
       .query({
+        limit: /^[0-9]*$/,
+        offset: /^[0-9]*$/,
         ts: /^[0-9]*$/,
         hash: /^[a-zA-Z0-9_]*$/,
         apikey: /^[a-zA-Z0-9_]*$/,
       })
       .reply(409, {
-        status:
-          "You must pass at least one valid character if you set the character filter.",
+        code: 409,
+        status: "An error occurred while fetching comics data.",
       });
 
-    await expect(
-      getCharacterComicsData(apiURI + nonNumericCharComicsID)
-    ).rejects.toMatchObject({
-      response: {
-        status: 409,
-        data: {
-          status:
-            "You must pass at least one valid character if you set the character filter.",
-        },
-      },
-    });
+    const rawData = await getCharacterComicsData(apiURI + nonNumericCharComicsID)
+
+    // Check if undefined since we received an error
+    expect(rawData).toBeNull();
   });
 });

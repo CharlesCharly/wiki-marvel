@@ -34,10 +34,13 @@ const getCharacterInfoData = async (characterName) => {
 };
 
 // Get raw character comics data
-const getCharacterComicsData = async (characterComicsURI) => {
+const getCharacterComicsData = async (characterComicsURI, offset = 0, limit = 100) => {
+  // API limit is 100 comics at a time
   try {
-    const response = await axios.get(characterComicsURI, {
+    let response = await axios.get(characterComicsURI, {
       params: {
+        limit,
+        offset,
         ts: apiTs,
         hash: apiHash,
         apikey: apiPublicKey,
@@ -53,8 +56,8 @@ const getCharacterComicsData = async (characterComicsURI) => {
       error.response.data &&
       error.response.data.code === 409
     ) {
-      // If the response code is 409, display the error
-      return error.response.data;
+      // If the response code is 409, return null
+      return null;
     } else {
       // If there was an error response from the API
       throw error;
@@ -83,7 +86,7 @@ const formatCharacterComics = (rawArray) => {
   return comicsList;
 };
 
-// Keep specific keys from an array and return the new one
+// Keep specific keys from an array and return the new array
 const keepSpecificKeys = (dataArray, keysToKeep) => {
   if (!dataArray) {
     return [];
