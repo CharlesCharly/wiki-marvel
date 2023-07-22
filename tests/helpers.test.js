@@ -14,6 +14,7 @@ describe("Format Character Info", () => {
 
   it("Should format raw data correctly", () => {
     const rawData = {
+      id: 1011334,
       name: "Hulk",
       description: "The angrier the Hulk gets, the stronger the Hulk gets.",
       comics: {
@@ -23,6 +24,7 @@ describe("Format Character Info", () => {
     };
 
     const expectedOutput = {
+      id: 1011334,
       name: "Hulk",
       description: "The angrier the Hulk gets, the stronger the Hulk gets.",
       collectionURI:
@@ -44,6 +46,7 @@ describe("Format Character Info", () => {
     };
 
     const expectedOutput = {
+      id: 0,
       name: "Unknown",
       description: "No description available",
       collectionURI:
@@ -57,12 +60,14 @@ describe("Format Character Info", () => {
 
   it("Should handle incorrect 'comics' property format in raw data", () => {
     const rawData = {
+      id: 1011334,
       name: "Hulk",
       description: "The angrier the Hulk gets, the stronger the Hulk gets.",
       comics: "invalid format, should be an object",
     };
 
     const expectedOutput = {
+      id: 1011334,
       name: "Hulk",
       description: "The angrier the Hulk gets, the stronger the Hulk gets.",
       collectionURI: undefined,
@@ -77,6 +82,7 @@ describe("Format Character Info", () => {
     const rawData = {};
 
     const expectedOutput = {
+      id: 0,
       name: "Unknown",
       description: "No description available",
       collectionURI: undefined, // Since 'comics' property is missing

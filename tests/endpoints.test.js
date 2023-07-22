@@ -31,6 +31,7 @@ describe("Fetch Character Info", () => {
         data: {
           results: [
             {
+              id: 1011334,
               name: "Hulk",
               description:
                 "The angrier the Hulk gets, the stronger the Hulk gets.",
@@ -47,6 +48,7 @@ describe("Fetch Character Info", () => {
     const rawData = await getCharacterInfoData(characterName);
 
     // Check if the values are the same
+    expect(rawData.id).toEqual(1011334);
     expect(rawData.name).toEqual("Hulk");
     expect(rawData.description).toEqual(
       "The angrier the Hulk gets, the stronger the Hulk gets."

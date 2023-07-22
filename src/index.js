@@ -34,7 +34,7 @@ const getCharacterInfoData = async (characterName) => {
 };
 
 // Get raw character comics data
-const getCharacterComicsData = async (characterComicsURI, offset = 0, limit = 100) => {
+const getCharacterComicsData = async (characterComicsURI, offset = 0, limit = 10) => {
   // API limit is 100 comics at a time
   try {
     let response = await axios.get(characterComicsURI, {
@@ -68,13 +68,14 @@ const getCharacterComicsData = async (characterComicsURI, offset = 0, limit = 10
 // Format raw character info to extract specific keys
 const formatCharacterInfo = (rawData) => {
   const {
+    id = 0,
     name = "Unknown",
     description = "No description available",
     comics = {},
   } = rawData;
-  const { collectionURI } = comics;
+  const { available, collectionURI } = comics;
 
-  return { name, description, collectionURI };
+  return { id, name, description, available, collectionURI };
 };
 
 // Format raw comics list to extract specific keys

@@ -17,10 +17,8 @@
     <div>
       <p>Name: <%= name %></p>
       <p>Description: <%= description %></p>
-      <h1>List of <%= comics.length %> Comics</h1>
-      <% if (comics.length === 0) { %>
-      <p>No comics found.</p>
-      <% } else { %>
+
+      <h1>List of <%= totalComics %> Comics</h1>
       <ul>
         <% comics.forEach(comic => { %>
         <li>
@@ -33,8 +31,78 @@
         </li>
         <% }); %>
       </ul>
+      <% if (totalComics > limitComics) { %>
+      <div>
+        <button onclick="previousPage()">Previous</button>
+        <button onclick="nextPage()">Next</button>
+      </div>
       <% } %>
     </div>
+
     <% } %>
+
+    <script>
+      let offset = 0;
+      const limit = <%= typeof limitComics !== 'undefined' ? limitComics : 0 %>;
+      const total = <%= typeof totalComics !== 'undefined' ? totalComics : 0 %>;
+      const charID = <%= typeof charID !== 'undefined' ? charID : 0 %>;
+
+      function previousPage() {
+        offset = Math.max(offset - limit, 0);
+        fetchComicsData();
+      }
+
+      function nextPage() {
+        offset = offset + limit;
+        fetchComicsData();
+      }
+
+      async function fetchComicsData() {
+        const response = await fetch(
+          `/api/comics?id=${charID}&offset=${offset}&limit=${limit}`
+        );
+        const data = await response.json();
+
+        updateComicsList(data);
+      }
+
+      function updateComicsList(data) {
+        const comicsList = document.querySelector("ul");
+        comicsList.innerHTML = "";
+
+        data.comics.forEach((comic) => {
+          const li = document.createElement("li");
+          const h3 = document.createElement("h3");
+          const p = document.createElement("p");
+
+          h3.textContent = comic.title;
+          if (comic.description) {
+            p.textContent = comic.description;
+          } else {
+            p.textContent = "N/A";
+          }
+
+          li.appendChild(h3);
+          li.appendChild(p);
+          comicsList.appendChild(li);
+        });
+
+        updateButtonState();
+      }
+
+      function updateButtonState() {
+        // Update the button state
+        const prevBtn = document.querySelector(
+          "button[onclick='previousPage()']"
+        );
+        const nextBtn = document.querySelector("button[onclick='nextPage()']");
+        prevBtn.disabled = offset === 0;
+        nextBtn.disabled = offset >= total - limit;
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        updateButtonState();
+      });
+    </script>
   </body>
 </html>
