@@ -2,23 +2,38 @@
 <html>
   <head>
     <title>Marvel Wiki Search Result</title>
+    <link rel="stylesheet" type="text/css" href="/css/result.css" />
   </head>
   <body>
-    <h2>You have researched <%= characterName %> in Marvel Wiki</h2>
+    <div class="back-to-search">
+      <a href="/search">
+        <button>Back to Search</button>
+      </a>
+    </div>
+
+    <h4>You have researched <%= characterName %> in Marvel Wiki</h4>
 
     <% if (notFound) { %>
     <div>
       <p>
-        It seems that the character is not from Marvel Universe, please check
-        your typo.
+        <i>
+          It seems that the character is not from Marvel Universe, please check
+          your typo.
+        </i>
       </p>
     </div>
     <% } else { %>
     <div>
-      <p>Name: <%= name %></p>
-      <p>Description: <%= description %></p>
+      <p class="character-name"><%= name %></p>
 
-      <h1>List of <%= totalComics %> Comics</h1>
+      <% if (description) { %>
+      <p><%= description %></p>
+      <% } else { %>
+      <p><i>No description has been provided</i></p>
+      <% } %>
+
+      <h2>List of <%= totalComics %> Comics</h2>
+
       <ul>
         <% comics.forEach(comic => { %>
         <li>
@@ -26,11 +41,12 @@
           <% if (comic.description) { %>
           <p><%= comic.description %></p>
           <% } else { %>
-          <p>N/A</p>
+          <p><i>No description has been provided</i></p>
           <% } %>
         </li>
         <% }); %>
       </ul>
+
       <% if (totalComics > limitComics) { %>
       <div>
         <button onclick="previousPage()">Previous</button>
@@ -79,7 +95,9 @@
           if (comic.description) {
             p.textContent = comic.description;
           } else {
-            p.textContent = "N/A";
+            const i = document.createElement("i");
+            i.textContent = "No description has been provided";
+            p.appendChild(i);
           }
 
           li.appendChild(h3);

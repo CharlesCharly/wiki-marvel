@@ -12,6 +12,9 @@ const {
 const app = express();
 // Set EJS as view engine
 app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "src/views"));
+// Serve static files from the 'src' directory
+app.use(express.static(path.join(__dirname, "src")));
 // Express app using JSON payloads for requests
 app.use(express.json());
 // Parse form data
